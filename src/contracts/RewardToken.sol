@@ -12,12 +12,12 @@ contract RWD {
     mapping(address => uint256) public balanceOf;
     mapping(address => mapping(address => uint256)) public allowance;
 
-    constructor() {
+    constructor() public {
         balanceOf[msg.sender] = totalSupply;
     }
 
     function transfer(address _to, uint _value) public returns(bool success) {
-        require(balanceOf[msg.sender >= _value]);
+        require(balanceOf[msg.sender] >= _value);
         balanceOf[msg.sender] -= _value;
         balanceOf[_to] += _value; 
         emit Transfer(msg.sender, _to, _value);
@@ -27,7 +27,7 @@ contract RWD {
     function transferFrom(address _from, address _to, uint256 _value) public returns (bool success) {
         require(balanceOf[_from] >= _value);
         require(allowance[_from][msg.sender] >= _value);
-        balanceOf[_from] -=value;
+        balanceOf[_from] -= _value;
         allowance[msg.sender][_from] -= _value;
         balanceOf[_to] += _value;
         emit Transfer(_from, _to, _value);
