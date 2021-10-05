@@ -75,6 +75,29 @@ contract('DecentralBank', ([owner, customer]) => {
             //Check Staking Balance state
             result = await decentralBank.isStaking(customer)
             assert.equal(result.toString(), 'true', 'customer staking status after staking from staking')
+
+            // Issue Tokens
+            await decentralBank.issueTokens({from: owner})
+
+            // Ensure only the owner can issue tokens
+            await decentralBank.issueTokens({from: customer}).should.be.rejected;
+
+            // Unstake Tokens
+            await decentralBank.unstakeTokens({from: customer})
+
+            // Check unstaking balances
+
+            result = await tether.balanceOf(customer)
+            assert.equal(result.toString(), tokens('100'), 'customer tether wallet balance after unstaking')
+            
+            //check updated Balance of CentralBank owner
+            result = await tether.balanceOf(decentralBank.address)
+            assert.equal(result.toString(), tokens('0'), 'CentralBank owner balance after customer unstaking')
+
+            //Check Staking Balance state
+            result = await decentralBank.isStaking(customer)
+            assert.equal(result.toString(), 'false', 'customer staking status after staking from unstaking')
+
         })
     })
  
