@@ -5,6 +5,7 @@ import Navbar from './Navbar.js'
 import Tether from '../truffle_abis/Tether.json'
 import RWD from '../truffle_abis/RWD.json'
 import DecentralBank from '../truffle_abis/DecentralBank.json'
+import Main from './Main.js'
 
 class App extends Component {
     
@@ -49,7 +50,6 @@ class App extends Component {
             this.setState({rwd: rwd})
             let rwdBalance = await rwd.methods.balanceOf(this.state.account).call()
             this.setState({rwdBalance: rwdBalance.toString()})
-            console.log({Balance: rwdBalance})
         } else {
             window.alert('Error! RWD contract not deployed - no detected network')
         }
@@ -61,12 +61,34 @@ class App extends Component {
             this.setState({decentralBank: decentralBank})
             let stakingBalance = await decentralBank.methods.stakingBalance(this.state.account).call()
             this.setState({stakingBalance: stakingBalance.toString()})
-            console.log({StakingBalance: stakingBalance})
         } else {
             window.alert('Error! DecentralBank contract not deployed - no detected network')
         }
         
         this.setState({loading: false})
+    }
+
+    // two functions : one that stakes and one that unstakes
+    // leverage our decentralBank contract - deposit tokens and unstaking
+    // .... staking phase ....
+    // depositTokens transferFrom ...
+    // function approve transaction hash ----
+    // STAKING FUNCTION ?? >> decentralBank.depositTokens(send transactionHash ==>)
+
+    stakeTokens = (amount) => {
+        this.setState({loading: true})
+        this.state.tether.methods.approve(this.state.decentralBank._address, amount).send({from: this.state.account}).on('transactionHash', (hash) => {
+        this.state.decentralBank.methods.depositTokens(amount).send({from: this.state.account}).on('transactionHash', (hash) => {
+            this.setState({loading: false})
+        })
+    })
+    }
+
+    unstakeTokens = () => {
+        this.setState({loading: true})
+        this.state.decentralBank.methods.unstakeTokens().send({from: this.state.account}).on('transactionHash', (hash) => {
+            this.setState({loading: false})
+        })
     }
 
     constructor(props) {
@@ -84,13 +106,28 @@ class App extends Component {
     }
 
     render() {
+        let content
+        {this.state.loading ? 
+            content = 
+            <p id='loader' className='text-center' style={{margin:'30px'}}>LOADING PLEASE...</p> : content = 
+            <Main 
+                tetherBalance = {this.state.tetherBalance}
+                rwdBalance = {this.state.rwdBalance}
+                stakingBalance = {this.state.stakingBalance}
+                stakeTokens = {this.stakeTokens}
+                unstakeTokens = {this.unstakeTokens}
+            />}
         return (
             <div>
                  <Navbar account={this.state.account}/>
-                <div className="text-center">
-                    <h1>
-                        {console.log(this.state.loading)}
-                    </h1>
+                <div className="container-fluid mt-5">
+                    <div className='row'>
+                        <main role='main' className='col-lg-12 ml-auto mr-auto' style={{maxWidth:'600px', minHeight:'100mv'}}>
+                            <div>
+                                {content}
+                            </div>
+                        </main>
+                    </div>
                 </div>
             </div>
 
