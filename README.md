@@ -24,9 +24,7 @@ git clone https://github.com/djamelkde/Defi-Staking-App.git
 npm install
 ```
 
-### 4. Make sure truggle -g is installed
-
-# use truffle compiile to compile smart contracts
+# use truffle to compile smart contracts
 ```console
 truffle compile
 ```
