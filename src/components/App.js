@@ -6,6 +6,7 @@ import Tether from '../truffle_abis/Tether.json'
 import RWD from '../truffle_abis/RWD.json'
 import DecentralBank from '../truffle_abis/DecentralBank.json'
 import Main from './Main.js'
+import ParticleSettings from "./ParticleSettings.js"
 
 class App extends Component {
     
@@ -109,7 +110,7 @@ class App extends Component {
         let content
         {this.state.loading ? 
             content = 
-            <p id='loader' className='text-center' style={{margin:'30px'}}>LOADING PLEASE...</p> : content = 
+            <p id='loader' className='text-center' style={{margin:'30px', color:'white'}}>LOADING PLEASE...</p> : content = 
             <Main 
                 tetherBalance = {this.state.tetherBalance}
                 rwdBalance = {this.state.rwdBalance}
@@ -118,7 +119,10 @@ class App extends Component {
                 unstakeTokens = {this.unstakeTokens}
             />}
         return (
-            <div>
+            <div className='App' style={{position:'relative'}}>
+                <div style={{position:'absolute'}}>
+                <ParticleSettings />
+                </div>
                  <Navbar account={this.state.account}/>
                 <div className="container-fluid mt-5">
                     <div className='row'>
