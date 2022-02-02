@@ -1,4 +1,4 @@
-# defi-staking-app-starter
+# Defi-staking-app-starter
 
 ## To download me simply open up the terminal and run:
 
